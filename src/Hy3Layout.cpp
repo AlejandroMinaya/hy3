@@ -969,6 +969,7 @@ void Hy3Layout::moveNodeToWorkspace(
 	{
 		g_pHyprRenderer->damageWindow(focused_window);
 		Desktop::globalWindowController()->moveWindowToWorkspace(focused_window, workspace);
+		node = nullptr; // ponytail: moveWindowToWorkspace triggers tree mutations that free the node
 	} else {
 		if (node == nullptr) return;
 
@@ -1014,8 +1015,10 @@ void Hy3Layout::moveNodeToWorkspace(
 
 		monitor->changeWorkspace(workspace);
 
-		node->layout()->recalcGeometry();
-		node->focus(warp, Desktop::FOCUS_REASON_KEYBIND);
+		if (node != nullptr) {
+			node->layout()->recalcGeometry();
+			node->focus(warp, Desktop::FOCUS_REASON_KEYBIND);
+		}
 	}
 }
 
